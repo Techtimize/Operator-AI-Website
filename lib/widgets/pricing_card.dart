@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_public_website/utils/app_reponsiveness/app_spaces.dart';
 
 class PricingCard extends StatefulWidget {
   final String? title;
@@ -40,8 +41,8 @@ class PricingCard extends StatefulWidget {
     this.borderColor = const Color(0xFFE0E0E0),
     this.focusBorderColor = Colors.blue,
     this.hoverBorderColor,
-    this.width = 200,
-    this.height = 180,
+    this.width = 240,
+    this.height = 190,
     this.showBadge = false,
     this.badgeText,
     this.badgeColor,
@@ -63,9 +64,7 @@ class _PricingCardState extends State<PricingCard> {
   bool get _effectiveHover => widget.isHover ?? _hovering;
 
   void _handleTap() {
-    setState(() {
-      _selected = !_selected;
-    });
+    setState(() => _selected = !_selected);
     widget.onTap?.call();
   }
 
@@ -80,7 +79,7 @@ class _PricingCardState extends State<PricingCard> {
             : widget.borderColor);
 
     final Color effectiveBgColor = _effectiveHover
-        ? (widget.hoverColor ?? widget.focusBorderColor.withOpacity(0.04))
+        ? (widget.hoverColor ?? widget.focusBorderColor.withOpacity(0.05))
         : widget.backgroundColor;
 
     return MouseRegion(
@@ -93,18 +92,18 @@ class _PricingCardState extends State<PricingCard> {
       child: GestureDetector(
         onTap: _handleTap,
         child: AnimatedScale(
-          scale: _effectiveHover ? 1.03 : 1.0,
+          scale: _effectiveHover ? 1.02 : 1.0,
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOut,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
             width: widget.width,
-            height: widget.height,
-            padding: const EdgeInsets.all(16),
+            height: widget.height, // 👈 keeps all cards same height
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
             decoration: BoxDecoration(
               color: effectiveBgColor,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: effectiveBorderColor,
                 width: 2,
@@ -112,74 +111,83 @@ class _PricingCardState extends State<PricingCard> {
               boxShadow: [
                 if (_effectiveHover || isSelected)
                   BoxShadow(
-                    color: effectiveBorderColor.withOpacity(0.25),
+                    color: effectiveBorderColor.withOpacity(0.18),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
               ],
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Title
-                widget.title != null && widget.title!.isNotEmpty
-                    ? Text(
-                        widget.title!,
-                        style: TextStyle(
-                          color: widget.titleColor ?? Colors.black,
-                          fontSize: 20,
-                       //   fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                    : const SizedBox.shrink(),
-
-                const SizedBox(height: 4),
-
-                // Subtitle
-                widget.subtitle != null && widget.subtitle!.isNotEmpty
-                    ? Text(
-                        widget.subtitle!,
-                        style: TextStyle(
-                          color: widget.subtitleColor ?? Colors.grey[700],
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                    : const SizedBox.shrink(),
-
-                const SizedBox(height: 8),
-
-                // Description
-                widget.description != null && widget.description!.isNotEmpty
-                    ? Text(
-                        widget.description!,
-                        style: TextStyle(
-                          color: widget.descriptionColor ?? Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      )
-                    : const SizedBox.shrink(),
-
-                const SizedBox(height: 10),
-
-                // Badge
-                if (widget.showBadge && widget.badgeText != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: widget.badgeColor ?? widget.focusBorderColor,
-                      borderRadius: BorderRadius.circular(8),
+                // content area (scrollable but fixed height)
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppSpaces.verticalBox(context,10),
+                        if (widget.title?.isNotEmpty ?? false)
+                          Text(
+                            widget.title!,
+                            style: TextStyle(
+                              color: widget.titleColor ?? Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              height: 1.3,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        if (widget.subtitle?.isNotEmpty ?? false) ...[
+                         AppSpaces.verticalBox(context,10),
+                          Text(
+                            widget.subtitle!,
+                            style: TextStyle(
+                              color: widget.subtitleColor ?? Colors.grey[700],
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                        if (widget.description?.isNotEmpty ?? false) ...[
+                           AppSpaces.verticalBox(context,12),
+                          Text(
+                            widget.description!,
+                            style: TextStyle(
+                              color:
+                                  widget.descriptionColor ?? Colors.grey[600],
+                              fontSize: 14,
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ],
                     ),
-                    child: Text(
-                      widget.badgeText!,
-                      style: TextStyle(
-                        color: widget.badgeTextColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                // badge (fixed at bottom)
+                if (widget.showBadge && widget.badgeText != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: widget.badgeColor ?? widget.focusBorderColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        widget.badgeText!,
+                        style: TextStyle(
+                          color: widget.badgeTextColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

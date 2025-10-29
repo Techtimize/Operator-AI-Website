@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_public_website/library/extensions/context_extensions.dart';
 
 class FeatureGridSection extends StatelessWidget {
   final String title;
@@ -28,6 +29,16 @@ class FeatureGridSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 🔹 Responsive breakpoints
+    final bool isMobile = context.isMobile;
+    final bool isTablet = context.isTablet;
+
+    final int crossAxisCount = isMobile
+        ? 1
+        : isTablet
+        ? 2
+        : 4;
+
     return Container(
       width: double.infinity,
       padding: padding,
@@ -46,32 +57,34 @@ class FeatureGridSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Section Title
+          // 🔹 Section Title
           Text(
             title,
             style: TextStyle(
               color: titleColor,
               fontWeight: FontWeight.w600,
-              fontSize: 18,
+              fontSize: isMobile ? 16 : 18,
             ),
           ),
           const SizedBox(height: 24),
 
-          // Grid of Features
+          // 🔹 Responsive Grid of Features
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: features.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, // Adjust per screen width
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 3.5,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: isMobile ? 8 : 12,
+              mainAxisSpacing: isMobile ? 8 : 12,
+              childAspectRatio: isMobile ? 6: 3.5,
             ),
             itemBuilder: (context, index) {
               return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: tileBackgroundColor,
                   borderRadius: BorderRadius.circular(10),
@@ -79,11 +92,7 @@ class FeatureGridSection extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      featureIcon,
-                      color: featureIconColor,
-                      size: 18,
-                    ),
+                    Icon(featureIcon, color: featureIconColor, size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
