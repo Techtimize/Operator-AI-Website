@@ -7,6 +7,8 @@ import '../pages/ai_csr_page.dart';
 import '../pages/industries_page.dart';
 import '../pages/pricing_page.dart';
 import '../pages/faq_page.dart';
+import '../pages/privacy_policy_page.dart';
+import '../pages/terms_of_service_page.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -41,6 +43,14 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/faq',
           builder: (context, state) => const FaqPageContent(),
+        ),
+        GoRoute(
+          path: '/privacy-policy',
+          builder: (context, state) => const PrivacyPolicyPageContent(),
+        ),
+        GoRoute(
+          path: '/terms-of-service',
+          builder: (context, state) => const TermsOfServicePageContent(),
         ),
       ],
     ),

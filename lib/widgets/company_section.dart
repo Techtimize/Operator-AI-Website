@@ -174,11 +174,11 @@ class CompanySection extends StatelessWidget {
         teamColor: TeamColor.development,
       ),
       const TeamMember(
-        name: 'Muhammad Zubair',
+        name: 'Muhammad Haseeb',
         title: 'FrontEnd Developer',
         description:
             'UI/UX craftsman building intuitive and responsive interfaces that delight users.',
-        initials: 'MZ',
+        initials: 'MH',
         teamColor: TeamColor.development,
       ),
       const TeamMember(

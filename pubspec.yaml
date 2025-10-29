@@ -16,6 +16,7 @@ dependencies:
   video_player: ^2.8.0
   http: ^1.1.0
   permission_handler: ^11.0.0
+  flutter_markdown: ^0.7.4+1
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +29,4 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - assets/legal/
