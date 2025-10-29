@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Footer extends StatelessWidget {
   final Function(String)? onRouteChanged;
@@ -20,29 +21,31 @@ class Footer extends StatelessWidget {
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1232),
-          child: isMobile ? _buildMobileFooter() : _buildDesktopFooter(),
+          child: isMobile
+              ? _buildMobileFooter(context)
+              : _buildDesktopFooter(context),
         ),
       ),
     );
   }
 
-  Widget _buildDesktopFooter() {
+  Widget _buildDesktopFooter(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _buildCopyright(),
         const SizedBox(width: 24),
-        _buildNavigationLinks(),
+        _buildNavigationLinks(context),
       ],
     );
   }
 
-  Widget _buildMobileFooter() {
+  Widget _buildMobileFooter(BuildContext context) {
     return Column(
       children: [
         _buildCopyright(),
         const SizedBox(height: 16),
-        _buildNavigationLinks(),
+        _buildNavigationLinks(context),
       ],
     );
   }
@@ -58,22 +61,22 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationLinks() {
+  Widget _buildNavigationLinks(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildLink('Privacy Policy'),
+        _buildLink('Privacy Policy', context),
         _buildSeparator(),
-        _buildLink('Terms of Service'),
+        _buildLink('Terms of Service', context),
         _buildSeparator(),
-        _buildLink('FAQ'),
+        _buildLink('FAQ', context),
       ],
     );
   }
 
-  Widget _buildLink(String text) {
+  Widget _buildLink(String text, BuildContext context) {
     return GestureDetector(
-      onTap: () => _handleLinkTap(text),
+      onTap: () => _handleLinkTap(text, context),
       child: Text(
         text,
         style: const TextStyle(
@@ -96,18 +99,19 @@ class Footer extends StatelessWidget {
     );
   }
 
-  void _handleLinkTap(String linkName) {
-    // Handle navigation to different pages
+  void _handleLinkTap(String linkName, BuildContext context) {
+    // Handle navigation to different pages using GoRouter for proper URL updates
     switch (linkName) {
       case 'Privacy Policy':
-        print('Navigate to Privacy Policy');
-        // TODO: Implement navigation to privacy policy page
+        context.go('/privacy-policy');
+        onRouteChanged?.call('/privacy-policy');
         break;
       case 'Terms of Service':
-        print('Navigate to Terms of Service');
-        // TODO: Implement navigation to terms of service page
+        context.go('/terms-of-service');
+        onRouteChanged?.call('/terms-of-service');
         break;
       case 'FAQ':
+        context.go('/faq');
         onRouteChanged?.call('/faq');
         break;
     }

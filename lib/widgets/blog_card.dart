@@ -56,17 +56,51 @@ class _ContentCardState extends State<ContentCard> {
             topLeft: Radius.circular(12),
             topRight: Radius.circular(12),
           ),
-          child: Image.asset(
-            widget.contentItem.imagePath,
-            width: double.infinity,
-            height: isMobile ? 200 : 250, // Smaller image on mobile
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                _buildImagePlaceholder(isMobile),
-          ),
+          child: _buildImage(isMobile),
         ),
         _buildCategoryTag(),
       ],
+    );
+  }
+
+  Widget _buildImage(bool isMobile) {
+    final String path = widget.contentItem.imagePath.trim();
+    final double h = isMobile ? 200 : 250;
+
+    if (path.isNotEmpty && path.startsWith('http')) {
+      return Image.network(
+        path,
+        width: double.infinity,
+        height: h,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildRandomImage(h),
+      );
+    }
+
+    if (path.isNotEmpty) {
+      return Image.asset(
+        path,
+        width: double.infinity,
+        height: h,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildRandomImage(h),
+      );
+    }
+
+    return _buildRandomImage(h);
+  }
+
+  Widget _buildRandomImage(double height) {
+    // Use a seeded random image so it remains consistent per card
+    final seed = widget.contentItem.title.hashCode & 0x7fffffff;
+    final url = 'https://picsum.photos/seed/$seed/800/500';
+    return Image.network(
+      url,
+      width: double.infinity,
+      height: height,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) =>
+          _buildImagePlaceholder(height <= 200),
     );
   }
 

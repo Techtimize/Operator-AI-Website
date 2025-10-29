@@ -7,6 +7,7 @@ class HomeFeatureCard extends StatelessWidget {
   final VoidCallback? onViewMorePressed;
   final List<SubFeatureCardData> subFeatures;
   final Color backgroundColor;
+  final Widget? illustration;
 
   const HomeFeatureCard({
     super.key,
@@ -15,6 +16,7 @@ class HomeFeatureCard extends StatelessWidget {
     this.onViewMorePressed,
     required this.subFeatures,
     required this.backgroundColor,
+    this.illustration,
   });
 
   @override
@@ -56,7 +58,7 @@ class HomeFeatureCard extends StatelessWidget {
         children: [
           _buildTextContent(isMobile),
           const SizedBox(height: 24),
-          _buildImagePlaceholder(isMobile),
+          _buildImageArea(isMobile),
         ],
       );
     }
@@ -67,7 +69,7 @@ class HomeFeatureCard extends StatelessWidget {
       children: [
         Expanded(flex: 2, child: _buildTextContent(isMobile)),
         const SizedBox(width: 48),
-        Expanded(flex: 3, child: _buildImagePlaceholder(isMobile)),
+        Expanded(flex: 3, child: _buildImageArea(isMobile)),
       ],
     );
   }
@@ -177,7 +179,13 @@ class HomeFeatureCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImagePlaceholder(bool isMobile) {
+  Widget _buildImageArea(bool isMobile) {
+    final Widget content =
+        illustration ??
+        const Center(
+          child: Icon(Icons.image, size: 64, color: Color(0xFF9CA3AF)),
+        );
+
     return Container(
       constraints: const BoxConstraints(maxWidth: 832, maxHeight: 256),
       width: double.infinity,
@@ -187,9 +195,7 @@ class HomeFeatureCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFD1D5DB), width: 1),
       ),
-      child: const Center(
-        child: Icon(Icons.image, size: 64, color: Color(0xFF9CA3AF)),
-      ),
+      child: content,
     );
   }
 
