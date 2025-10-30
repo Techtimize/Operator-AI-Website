@@ -71,12 +71,13 @@ class _PricingCardState extends State<PricingCard> {
   @override
   Widget build(BuildContext context) {
     final bool isSelected = widget.isSelected || _selected;
+    final bool isMobile = MediaQuery.of(context).size.width < 768;
 
     final Color effectiveBorderColor = isSelected
         ? widget.focusBorderColor
         : (_effectiveHover
-            ? (widget.hoverBorderColor ?? widget.focusBorderColor)
-            : widget.borderColor);
+              ? (widget.hoverBorderColor ?? widget.focusBorderColor)
+              : widget.borderColor);
 
     final Color effectiveBgColor = _effectiveHover
         ? (widget.hoverColor ?? widget.focusBorderColor.withOpacity(0.05))
@@ -98,16 +99,13 @@ class _PricingCardState extends State<PricingCard> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
-            width: widget.width,
+            width: isMobile ? double.infinity : widget.width,
             height: widget.height, // 👈 keeps all cards same height
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
             decoration: BoxDecoration(
               color: effectiveBgColor,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: effectiveBorderColor,
-                width: 2,
-              ),
+              border: Border.all(color: effectiveBorderColor, width: 2),
               boxShadow: [
                 if (_effectiveHover || isSelected)
                   BoxShadow(
@@ -126,7 +124,7 @@ class _PricingCardState extends State<PricingCard> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        AppSpaces.verticalBox(context,10),
+                        AppSpaces.verticalBox(context, 10),
                         if (widget.title?.isNotEmpty ?? false)
                           Text(
                             widget.title!,
@@ -139,7 +137,7 @@ class _PricingCardState extends State<PricingCard> {
                             textAlign: TextAlign.center,
                           ),
                         if (widget.subtitle?.isNotEmpty ?? false) ...[
-                         AppSpaces.verticalBox(context,10),
+                          AppSpaces.verticalBox(context, 10),
                           Text(
                             widget.subtitle!,
                             style: TextStyle(
@@ -151,7 +149,7 @@ class _PricingCardState extends State<PricingCard> {
                           ),
                         ],
                         if (widget.description?.isNotEmpty ?? false) ...[
-                           AppSpaces.verticalBox(context,12),
+                          AppSpaces.verticalBox(context, 12),
                           Text(
                             widget.description!,
                             style: TextStyle(

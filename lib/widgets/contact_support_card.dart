@@ -75,7 +75,6 @@ class _ContactSupportCardState extends State<ContactSupportCard> {
           child: ElevatedButton(
             onPressed: () {
               // TODO: Implement contact support functionality
-              print('Contact Support Team clicked');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF2563EB),

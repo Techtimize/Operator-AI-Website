@@ -67,22 +67,12 @@ class HeyGenService {
             ? '$_baseUrl/v1/streaming.create'
             : '${proxy}${Uri.encodeComponent('$_baseUrl/v1/streaming.create')}';
 
-        print(
-          'Attempting connection with proxy: ${proxy.isEmpty ? "Direct" : proxy}',
-        );
-        print('Full URL: $url');
-        print('Avatar ID: $avatarId');
-        print('Voice ID: $voiceId');
-        print('Language: $language');
-
         // Decode API key if it's base64 encoded
         String decodedApiKey = _apiKey!;
         try {
           final bytes = base64Decode(_apiKey!);
           decodedApiKey = String.fromCharCodes(bytes);
-          print('API key decoded successfully');
         } catch (e) {
-          print('API key is not base64 encoded, using as-is');
           decodedApiKey = _apiKey!;
         }
 
@@ -100,27 +90,17 @@ class HeyGenService {
           }),
         );
 
-        print('Response Status: ${response.statusCode}');
-        print('Response Body: ${response.body}');
+        // Avoid logging raw response in production
 
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           _sessionId = data['session_id'];
-          print(
-            'Session created successfully with proxy: ${proxy.isEmpty ? "Direct" : proxy}',
-          );
           _currentProxyIndex = i; // Remember working proxy
           return _sessionId;
         } else {
-          print(
-            'Proxy ${proxy.isEmpty ? "Direct" : proxy} failed: ${response.statusCode} - ${response.body}',
-          );
           continue; // Try next proxy
         }
       } catch (e) {
-        print(
-          'Proxy ${_corsProxies[i].isEmpty ? "Direct" : _corsProxies[i]} failed: $e',
-        );
         continue; // Try next proxy
       }
     }
@@ -138,26 +118,19 @@ class HeyGenService {
     }
 
     try {
-      print('Connecting to HeyGen WebSocket...');
-      print('Session ID: $_sessionId');
-
       final wsUrl = '$_streamingUrl/$_sessionId';
-      print('Connecting to WebSocket: $wsUrl');
 
       try {
         _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
 
         _channel!.stream.listen(
           (data) {
-            print('WebSocket message received: $data');
             _handleWebSocketMessage(data);
           },
           onError: (error) {
-            print('WebSocket error: $error');
             _isConnected = false;
           },
           onDone: () {
-            print('WebSocket connection closed');
             _isConnected = false;
           },
         );
@@ -165,14 +138,11 @@ class HeyGenService {
         // Wait for connection to be established
         await Future.delayed(const Duration(seconds: 2));
         _isConnected = true;
-        print('WebSocket connection established');
         return true;
       } catch (e) {
-        print('WebSocket connection failed: $e');
         throw e;
       }
     } catch (e) {
-      print('Error connecting to WebSocket: $e');
       return false;
     }
   }
@@ -194,12 +164,11 @@ class HeyGenService {
           _messageController?.add(message);
           break;
         case 'error':
-          print('HeyGen error: ${message['message']}');
           _messageController?.add(message);
           break;
       }
     } catch (e) {
-      print('Error parsing WebSocket message: $e');
+      // Swallow JSON parse errors in production
     }
   }
 

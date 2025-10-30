@@ -22,4 +22,8 @@ class HeyGenConfig {
   static const Duration connectionTimeout = Duration(seconds: 10);
   static const Duration retryDelay = Duration(seconds: 3);
   static const int maxRetryAttempts = 3;
+
+  // Fallback HeyGen streaming embed URL for hero section (web iframe)
+  static const String fallbackEmbedUrl =
+      'https://labs.heygen.com/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiIxNDRkYTdmYzY3Y2E0MmNmOTc5NDQyOGY0\nMmJmNmZiMCIsInByZXZpZXdJbWciOiJodHRwczovL2ZpbGVzMi5oZXlnZW4uYWkvYXZhdGFyL3Yz\nLzE0NGRhN2ZjNjdjYTQyY2Y5Nzk0NDI4ZjQyYmY2ZmIwL2Z1bGwvMi4yL3ByZXZpZXdfdGFyZ2V0\nLndlYnAiLCJuZWVkUmVtb3ZlQmFja2dyb3VuZCI6ZmFsc2UsImtub3dsZWRnZUJhc2VJZCI6ImY3\nYWMxNDM0MzhmYTQ3MjM4OWNhYWVkZTJlOGE3ZDM0IiwidXNlcm5hbWUiOiI4MGE5ZTJjYWViN2Q0\nNWMwYWNlZjI1MGQwZDgzZDY4MSJ9&inIFrame=1';
 }

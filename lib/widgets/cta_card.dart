@@ -33,8 +33,10 @@ class CtaCard extends StatelessWidget {
     final isTablet = screenWidth >= 768 && screenWidth < 1024;
 
     return Container(
-      constraints: BoxConstraints(maxWidth: isMobile ? screenWidth - 32 : 672),
-      height: isMobile ? 280 : 219.99, // Taller on mobile for better spacing
+      constraints: BoxConstraints(
+        maxWidth: isMobile ? screenWidth - 32 : 672,
+        minHeight: isMobile ? 280 : 220,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -49,6 +51,7 @@ class CtaCard extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(isMobile ? 24 : 32),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

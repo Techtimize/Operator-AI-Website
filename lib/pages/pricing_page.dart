@@ -134,7 +134,10 @@ class _PricingPageContentState extends State<PricingPageContent> {
           ),
           AppSpaces.verticalBox(context, 32),
           Padding(
-            padding: AppSpaces.customPadding(context, h: 100),
+            padding: AppSpaces.customPadding(
+              context,
+              h: isMobile || isTablet ? 12 : 100,
+            ),
             child: useColumn
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -164,7 +167,10 @@ class _PricingPageContentState extends State<PricingPageContent> {
           ),
           AppSpaces.verticalBox(context, 10),
           Padding(
-            padding: AppSpaces.customPadding(context, h: 100),
+            padding: AppSpaces.customPadding(
+              context,
+              h: isMobile || isTablet ? 12 : 100,
+            ),
             child: useColumnn
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,7 +193,10 @@ class _PricingPageContentState extends State<PricingPageContent> {
 
           AppSpaces.verticalBox(context, 50),
           Padding(
-            padding: AppSpaces.customPadding(context, h : isMobile|| isTablet ? 10 : 100),
+            padding: AppSpaces.customPadding(
+              context,
+              h: isMobile || isTablet ? 10 : 100,
+            ),
             child: PricingDetailsCard(
               title: "Startup Package Pricing",
               setupPrice: "2720 AED",

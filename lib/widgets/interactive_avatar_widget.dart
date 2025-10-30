@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import '../services/heygen_service.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import '../constants/heygen_config.dart';
+import 'heygen_embed.dart' as heygen_embed;
 
 class InteractiveAvatarWidget extends StatefulWidget {
   final String avatarId;
@@ -46,6 +49,7 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
   ui.Image? _currentVideoFrame;
   bool _hasVideoFrame = false;
   Timer? _videoFrameTimer;
+  Timer? _connectionTimeoutTimer;
 
   StreamSubscription<Map<String, dynamic>>? _messageSubscription;
   StreamSubscription<String>? _videoSubscription;
@@ -106,7 +110,6 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
     // Handle base64 video data from HeyGen
     try {
       final bytes = base64Decode(videoData);
-      print('Received video data: ${bytes.length} bytes');
 
       // Convert bytes to Uint8List
       final uint8List = Uint8List.fromList(bytes);
@@ -120,9 +123,7 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
           _hasVideoFrame = true;
         });
       }
-    } catch (e) {
-      print('Error handling video data: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _decodeImageFromBytes(Uint8List bytes) async {
@@ -135,17 +136,12 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
           _currentVideoFrame = frame.image;
         });
       }
-    } catch (e) {
-      print('Error decoding video frame: $e');
-    }
+    } catch (e) {}
   }
 
   void _handleAudioData(String audioData) {
     // Handle base64 audio data from HeyGen
     try {
-      final bytes = base64Decode(audioData);
-      print('Received audio data: ${bytes.length} bytes');
-
       // TODO: Implement audio playback
       // For now, we'll just acknowledge receipt
       if (mounted) {
@@ -158,9 +154,7 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
       // 1. Convert base64 to audio bytes
       // 2. Use audio player to play the audio
       // 3. Handle audio playback state
-    } catch (e) {
-      print('Error handling audio data: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _initializeAvatar() async {
@@ -169,9 +163,10 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
       _connectionStatus = 'Connecting...';
     });
 
+    _startConnectionTimeout();
+
     try {
-      print('Initializing avatar with ID: ${widget.avatarId}');
-      print('Using API key: ${widget.apiKey.substring(0, 10)}...');
+      // Initialize avatar session
 
       // Create streaming session
       final sessionId = await _heyGenService.createStreamingSession(
@@ -180,27 +175,25 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
         language: _currentLanguage,
       );
 
-      print('Session ID received: $sessionId');
-
       if (sessionId != null) {
         // Connect to WebSocket stream
         final connected = await _heyGenService.connectToStream();
-        print('WebSocket connection result: $connected');
 
         setState(() {
           _isConnecting = false;
           _isConnected = connected;
           _connectionStatus = connected ? 'Connected' : 'Connection failed';
         });
+        _clearConnectionTimeout();
       } else {
-        print('Failed to create session - sessionId is null');
+        // Session creation failed
         setState(() {
           _isConnecting = false;
           _connectionStatus = 'Failed to create session';
         });
+        _clearConnectionTimeout();
       }
     } catch (e) {
-      print('Error initializing avatar: $e');
       setState(() {
         _isConnecting = false;
         if (e.toString().contains('CORS') ||
@@ -211,13 +204,31 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
           _connectionStatus = 'Error: $e';
         }
       });
+      _clearConnectionTimeout();
     }
   }
 
   Future<void> _retryWithDifferentProxy() async {
-    print('Retrying with different CORS proxy...');
+    // Retry with next available proxy
     _heyGenService.resetProxyIndex();
     await _initializeAvatar();
+  }
+
+  void _startConnectionTimeout() {
+    _clearConnectionTimeout();
+    _connectionTimeoutTimer = Timer(HeyGenConfig.connectionTimeout, () {
+      if (!mounted) return;
+      if (_isConnected) return;
+      setState(() {
+        _isConnecting = false;
+        _connectionStatus = 'Connection timeout. Showing fallback.';
+      });
+    });
+  }
+
+  void _clearConnectionTimeout() {
+    _connectionTimeoutTimer?.cancel();
+    _connectionTimeoutTimer = null;
   }
 
   @override
@@ -277,12 +288,13 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
                   // Avatar video area
                   _buildAvatarVideoArea(),
 
-                  // Connection status indicator
-                  Positioned(
-                    top: 16,
-                    left: 16,
-                    child: _buildConnectionStatus(),
-                  ),
+                  // Connection status indicator (hide on web fallback)
+                  if (!kIsWeb || _isConnected)
+                    Positioned(
+                      top: 16,
+                      left: 16,
+                      child: _buildConnectionStatus(),
+                    ),
 
                   // Speaking indicator
                   if (_isSpeaking) _buildSpeakingIndicator(),
@@ -370,114 +382,125 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
         ),
         child: Stack(
           children: [
-            // Centered offline content
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 640),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.smart_toy_outlined,
-                          size: 60,
-                          color: Color(0xFF6C757D),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Avatar Offline',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          color: Color(0xFF495057),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        _connectionStatus,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF6C757D),
-                          height: 1.4,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+            if (kIsWeb)
+              // Web fallback: show only the iframe to avoid overlay clutter
+              Positioned.fill(
+                child: heygen_embed.buildHeygenEmbed(
+                  HeyGenConfig.fallbackEmbedUrl,
                 ),
-              ),
-            ),
-            // Bottom-centered button with max width
-            Positioned(
-              left: 24,
-              right: 24,
-              bottom: 24,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
-                  child: ElevatedButton(
-                    onPressed: _isConnecting ? null : _retryWithDifferentProxy,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8B5CF6),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 3,
-                    ),
-                    child: _isConnecting
-                        ? const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                ),
+              )
+            else ...[
+              // Centered offline content (non-web only)
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
                               ),
-                              SizedBox(width: 8),
-                              Text('Connecting...'),
-                            ],
-                          )
-                        : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.refresh, size: 20),
-                              SizedBox(width: 8),
-                              Text('Try Different Proxy'),
                             ],
                           ),
+                          child: const Icon(
+                            Icons.smart_toy_outlined,
+                            size: 60,
+                            color: Color(0xFF6C757D),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Avatar Offline',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            color: Color(0xFF495057),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          _connectionStatus,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF6C757D),
+                            height: 1.4,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+              // Bottom-centered button with max width (non-web only)
+              Positioned(
+                left: 24,
+                right: 24,
+                bottom: 24,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 560),
+                    child: ElevatedButton(
+                      onPressed: _isConnecting
+                          ? null
+                          : _retryWithDifferentProxy,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8B5CF6),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 3,
+                      ),
+                      child: _isConnecting
+                          ? const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text('Connecting...'),
+                              ],
+                            )
+                          : const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.refresh, size: 20),
+                                SizedBox(width: 8),
+                                Text('Try Different Proxy'),
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       );
@@ -686,6 +709,7 @@ class _InteractiveAvatarWidgetState extends State<InteractiveAvatarWidget> {
     _audioSubscription?.cancel();
     _videoController?.dispose();
     _videoFrameTimer?.cancel();
+    _connectionTimeoutTimer?.cancel();
     _currentVideoFrame?.dispose();
     _heyGenService.dispose();
     super.dispose();

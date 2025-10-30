@@ -28,19 +28,18 @@ class ServiceInfoTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Icon container (no background, just icon)
-        Icon(
-          icon,
-          color: iconColor,
-          size: 48,
-        ),
+        Icon(icon, color: iconColor, size: 48),
         const SizedBox(width: 12),
         // Text section
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title and small label row
-              Row(
+              // Title and small label (wrap to avoid overflow on mobile)
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     title,
@@ -50,10 +49,11 @@ class ServiceInfoTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 8),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       border: Border.all(

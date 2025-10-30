@@ -67,12 +67,10 @@ class HeroSection extends StatelessWidget {
   void _handleChatNowPressed() {
     // Navigate to chat page or show chat interface
     // You can implement this based on your app's navigation structure
-    print('Chat now pressed - implement navigation to chat');
   }
 
   void _handleLanguageChange(String language) {
     // Handle language change
-    print('Language changed to: $language');
   }
 }
 

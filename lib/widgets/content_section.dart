@@ -131,11 +131,9 @@ class ContentSection extends StatelessWidget {
       secondaryButtonText: 'View All Articles',
       onPrimaryPressed: () {
         // Handle newsletter subscription
-        print('Newsletter subscription clicked');
       },
       onSecondaryPressed: () {
         // Handle view all articles
-        print('View all articles clicked');
       },
     );
   }
