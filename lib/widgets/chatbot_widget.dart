@@ -425,6 +425,16 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
       _messages.add(ChatMessage(isUser: false, text: response.text));
     }
 
+    // Add any extra text bubbles sent by the backend
+    if (response.additionalMessages != null &&
+        response.additionalMessages!.isNotEmpty) {
+      for (final extra in response.additionalMessages!) {
+        final trimmed = extra.trim();
+        if (trimmed.isEmpty) continue;
+        _messages.add(ChatMessage(isUser: false, text: trimmed));
+      }
+    }
+
     if (response.media != null && response.media!.isNotEmpty) {
       final attachments = <Widget>[];
       for (final mediaPath in response.media!) {
