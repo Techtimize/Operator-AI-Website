@@ -17,6 +17,141 @@ class PricingPageContent extends StatefulWidget {
 }
 
 class _PricingPageContentState extends State<PricingPageContent> {
+  bool _checkedPaymentParam = false;
+  // Track which plan is selected for conditional details box rendering
+  Plan _selectedPlan = Plan.individual;
+
+  List<Widget> _buildPlanCards() {
+    return [
+      PricingCard(
+        title: "Individual Services",
+        description: "Choose specific AI services for your needs",
+        titleColor: AppColor.darkTextColor,
+        focusBorderColor: Colors.blue,
+        hoverColor: Colors.blue.withAlpha(26),
+        isSelected: _selectedPlan == Plan.individual,
+        onTap: () {
+          setState(() => _selectedPlan = Plan.individual);
+        },
+      ),
+      PricingCard(
+        title: "Startup Package",
+        description: "3-4 services bundle for growing businesses",
+        titleColor: AppColor.darkTextColor,
+        backgroundColor: Colors.white,
+        borderColor: Colors.green.withAlpha(77),
+        focusBorderColor: Colors.green,
+        showBadge: true,
+        badgeText: "Save 15%",
+        badgeColor: Colors.green,
+        isSelected: _selectedPlan == Plan.startup,
+        onTap: () {
+          setState(() => _selectedPlan = Plan.startup);
+        },
+      ),
+      PricingCard(
+        title: "Enterprise Package",
+        description: "All 8 services for comprehensive AI transformation",
+        titleColor: Colors.black,
+        borderColor: Colors.grey.withAlpha(77),
+        focusBorderColor: Colors.blue,
+        hoverBorderColor: Colors.blueAccent,
+        hoverColor: Colors.blue.withAlpha(20),
+        showBadge: true,
+        badgeText: "Save 25%",
+        badgeColor: Colors.green,
+        isSelected: _selectedPlan == Plan.enterprise,
+        onTap: () {
+          setState(() => _selectedPlan = Plan.enterprise);
+        },
+      ),
+    ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Defer reading URL until after first frame to ensure context is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _checkedPaymentParam) return;
+      _checkedPaymentParam = true;
+      final base = Uri.base;
+      String? payment = base.queryParameters['payment'];
+
+      // Handle Flutter web hash strategy where query is inside fragment: #/pricing?payment=success
+      if (payment == null || payment.isEmpty) {
+        final String frag = base.fragment; // e.g. "/pricing?payment=success"
+        if (frag.isNotEmpty) {
+          final fragUri = Uri.parse(frag.startsWith('/') ? frag : '/$frag');
+          payment = fragUri.queryParameters['payment'];
+        }
+      }
+
+      if (payment != null && payment.toLowerCase() == 'success') {
+        _showPaymentSuccessModal();
+      }
+    });
+  }
+
+  void _showPaymentSuccessModal() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        final Color successColor = Colors.green.shade600;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: const Color(0xFFF7F7FF),
+          contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+          titlePadding: const EdgeInsets.only(top: 20, left: 24, right: 24),
+          title: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: successColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.check_rounded, color: successColor),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Payment successful',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Thank you! Your payment was processed successfully.',
+          ),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          actions: [
+            TextButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.close_rounded),
+              label: const Text('Close'),
+              style: TextButton.styleFrom(
+                foregroundColor: successColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   final List<Widget> pricingCards = [
     PricingCard(
       title: "800 AED",
@@ -59,41 +194,7 @@ class _PricingPageContentState extends State<PricingPageContent> {
     ),
   ];
 
-  final List<Widget> planCards = [
-    PricingCard(
-      title: "Individual Services",
-      description: "Choose specific AI services for your needs",
-      titleColor: AppColor.darkTextColor,
-      focusBorderColor: Colors.blue,
-      hoverColor: Colors.blue.withAlpha(26),
-      onTap: () {},
-    ),
-    PricingCard(
-      title: "Startup Package",
-      description: "3-4 services bundle for growing businesses",
-      titleColor: AppColor.darkTextColor,
-      backgroundColor: Colors.white,
-      borderColor: Colors.green.withAlpha(77),
-      focusBorderColor: Colors.green,
-      showBadge: true,
-      badgeText: "Save 15%",
-      badgeColor: Colors.green,
-      onTap: () {},
-    ),
-    PricingCard(
-      title: "Enterprise Package",
-      description: "All 8 services for comprehensive AI transformation",
-      titleColor: Colors.black,
-      borderColor: Colors.grey.withAlpha(77),
-      focusBorderColor: Colors.blue,
-      hoverBorderColor: Colors.blueAccent,
-      hoverColor: Colors.blue.withAlpha(20),
-      showBadge: true,
-      badgeText: "Save 25%",
-      badgeColor: Colors.green,
-      onTap: () {},
-    ),
-  ];
+  // Removed static planCards; built dynamically in build via _buildPlanCards()
 
   @override
   Widget build(BuildContext context) {
@@ -171,42 +272,60 @@ class _PricingPageContentState extends State<PricingPageContent> {
               context,
               h: isMobile || isTablet ? 12 : 100,
             ),
-            child: useColumnn
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: List.generate(
-                      planCards.length * 2 - 1,
-                      (index) => index.isEven
-                          ? planCards[index ~/ 2]
-                          : AppSpaces.verticalBox(context, 20),
-                    ),
-                  )
-                : Row(
-                    children: List.generate(
-                      planCards.length * 2 - 1,
-                      (index) => index.isEven
-                          ? Expanded(child: planCards[index ~/ 2])
-                          : AppSpaces.horizontalBox(context, 20),
-                    ),
-                  ),
+            child: Builder(
+              builder: (context) {
+                final planCards = _buildPlanCards();
+                return useColumnn
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: List.generate(
+                          planCards.length * 2 - 1,
+                          (index) => index.isEven
+                              ? planCards[index ~/ 2]
+                              : AppSpaces.verticalBox(context, 20),
+                        ),
+                      )
+                    : Row(
+                        children: List.generate(
+                          planCards.length * 2 - 1,
+                          (index) => index.isEven
+                              ? Expanded(child: planCards[index ~/ 2])
+                              : AppSpaces.horizontalBox(context, 20),
+                        ),
+                      );
+              },
+            ),
           ),
 
-          AppSpaces.verticalBox(context, 50),
-          Padding(
-            padding: AppSpaces.customPadding(
-              context,
-              h: isMobile || isTablet ? 10 : 100,
+          if (_selectedPlan != Plan.individual) ...[
+            AppSpaces.verticalBox(context, 32),
+            Padding(
+              padding: AppSpaces.customPadding(
+                context,
+                h: isMobile || isTablet ? 10 : 100,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 672),
+                  child: PricingDetailsCard(
+                    title: _selectedPlan == Plan.startup
+                        ? "Startup Package Pricing"
+                        : "Enterprise Package Pricing",
+                    setupPrice: _selectedPlan == Plan.startup
+                        ? "2720 AED"
+                        : "4800 AED",
+                    setupLabel: "Setup & Deployment",
+                    subscriptionPrice: _selectedPlan == Plan.startup
+                        ? "14 AED/day"
+                        : "24 AED/day",
+                    subscriptionLabel: "Monthly Subscription",
+                    isMobile: context.isMobile,
+                    isTablet: context.isTablet,
+                  ),
+                ),
+              ),
             ),
-            child: PricingDetailsCard(
-              title: "Startup Package Pricing",
-              setupPrice: "2720 AED",
-              setupLabel: "Setup & Deployment",
-              subscriptionPrice: "14 AED/day",
-              subscriptionLabel: "Monthly Subscription",
-              isMobile: context.isMobile,
-              isTablet: context.isTablet,
-            ),
-          ),
+          ],
 
           AppSpaces.verticalBox(context, 50),
           ResponsiveServiceRow(
@@ -672,3 +791,5 @@ class _PricingPageContentState extends State<PricingPageContent> {
     );
   }
 }
+
+enum Plan { individual, startup, enterprise }

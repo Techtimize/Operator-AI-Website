@@ -41,16 +41,7 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
   bool _isSending = false;
   bool _initializedWelcome = false;
   final ValueNotifier<bool> _isOpenNotifier = ValueNotifier<bool>(false);
-  List<ChatbotButtonData> _initialButtons = const [
-    ChatbotButtonData(text: 'What can you do?', url: '/', mediaFilename: ''),
-    ChatbotButtonData(
-      text: 'Show a product demo',
-      url: '/',
-      mediaFilename: 'videos/demo.mp4',
-    ),
-    ChatbotButtonData(text: 'Pricing options', url: '/', mediaFilename: ''),
-    ChatbotButtonData(text: 'Talk to sales', url: '/', mediaFilename: ''),
-  ];
+  List<ChatbotButtonData> _initialButtons = const [];
 
   @override
   void dispose() {
@@ -102,7 +93,7 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
         ChatMessage(
           isUser: false,
           text:
-              'Hello! I\'m the Operator AI assistant. How can I help you today?',
+              "Hello! I'm PAPS, the AI from Opperator A.I. What is your name?",
         ),
       );
     });
@@ -179,10 +170,8 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.smart_toy, color: Colors.black87),
-                      const SizedBox(width: 8),
                       const Text(
-                        'Assistant',
+                        'Artificial Intelligence',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
