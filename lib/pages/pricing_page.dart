@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_public_website/library/extensions/context_extensions.dart';
-import 'package:new_public_website/reponsiveness.dart/app_textstyles.dart';
+import 'package:new_public_website/responsiveness/app_textstyles.dart';
 import 'package:new_public_website/utils/app_reponsiveness/app_spaces.dart';
 import 'package:new_public_website/utils/colors_util.dart';
 import 'package:new_public_website/widgets/feature_grid_section.dart';
@@ -25,7 +25,7 @@ class _PricingPageContentState extends State<PricingPageContent> {
       description: "One-time customization fee",
       titleColor: Colors.blue,
       focusBorderColor: Colors.blue,
-      hoverColor: Colors.blue.withOpacity(0.1),
+      hoverColor: Colors.blue.withAlpha(26),
       onTap: () {},
     ),
     PricingCard(
@@ -34,7 +34,7 @@ class _PricingPageContentState extends State<PricingPageContent> {
       description: "Per service, billed monthly",
       titleColor: Colors.green,
       backgroundColor: Colors.white,
-      borderColor: Colors.green.withOpacity(0.3),
+      borderColor: Colors.green.withAlpha(77),
       focusBorderColor: Colors.green,
       showBadge: false,
       isHover: false,
@@ -51,7 +51,7 @@ class _PricingPageContentState extends State<PricingPageContent> {
       descriptionColor: AppColor.backgroundEndColor,
       backgroundColor: Colors.white,
       isHover: false,
-      borderColor: Colors.green.withOpacity(0.3),
+      borderColor: Colors.green.withAlpha(77),
       focusBorderColor: Colors.green,
       badgeText: "Save 15%",
       badgeColor: Colors.green,
@@ -65,7 +65,7 @@ class _PricingPageContentState extends State<PricingPageContent> {
       description: "Choose specific AI services for your needs",
       titleColor: AppColor.darkTextColor,
       focusBorderColor: Colors.blue,
-      hoverColor: Colors.blue.withOpacity(0.1),
+      hoverColor: Colors.blue.withAlpha(26),
       onTap: () {},
     ),
     PricingCard(
@@ -73,7 +73,7 @@ class _PricingPageContentState extends State<PricingPageContent> {
       description: "3-4 services bundle for growing businesses",
       titleColor: AppColor.darkTextColor,
       backgroundColor: Colors.white,
-      borderColor: Colors.green.withOpacity(0.3),
+      borderColor: Colors.green.withAlpha(77),
       focusBorderColor: Colors.green,
       showBadge: true,
       badgeText: "Save 15%",
@@ -84,10 +84,10 @@ class _PricingPageContentState extends State<PricingPageContent> {
       title: "Enterprise Package",
       description: "All 8 services for comprehensive AI transformation",
       titleColor: Colors.black,
-      borderColor: Colors.grey.withOpacity(0.3),
+      borderColor: Colors.grey.withAlpha(77),
       focusBorderColor: Colors.blue,
       hoverBorderColor: Colors.blueAccent,
-      hoverColor: Colors.blue.withOpacity(0.08),
+      hoverColor: Colors.blue.withAlpha(20),
       showBadge: true,
       badgeText: "Save 25%",
       badgeColor: Colors.green,

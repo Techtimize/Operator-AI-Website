@@ -4,13 +4,12 @@ import 'package:new_public_website/utils/colors_util.dart';
 // ✅ Import your responsive helper
 
 class AppTextStyles {
-  
   static const String _fontFamily = 'Mulish';
   static double _scaleFontSize(BuildContext context, double baseSize) {
     return ResponsiveUtils.getResponsiveFontSize(context, baseSize);
   }
 
-   static TextStyle text0(BuildContext context) {
+  static TextStyle text0(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.textWhite,
@@ -18,14 +17,13 @@ class AppTextStyles {
     );
   }
 
-   static TextStyle mediumDarkText0(BuildContext context) {
+  static TextStyle mediumDarkText0(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.secondaryLighterTextColor,
       fontSize: _scaleFontSize(context, 10),
     );
   }
-
 
   static TextStyle darkText0(BuildContext context) {
     return TextStyle(
@@ -35,7 +33,6 @@ class AppTextStyles {
     );
   }
 
-
   static TextStyle text1(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
@@ -44,7 +41,7 @@ class AppTextStyles {
     );
   }
 
-   static TextStyle mediumDarkText1(BuildContext context) {
+  static TextStyle mediumDarkText1(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.secondaryLighterTextColor,
@@ -52,7 +49,7 @@ class AppTextStyles {
     );
   }
 
-    static TextStyle darkText1(BuildContext context) {
+  static TextStyle darkText1(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.darkTextColor,
@@ -60,14 +57,15 @@ class AppTextStyles {
     );
   }
 
-   static TextStyle text2(BuildContext context) {
+  static TextStyle text2(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.textWhite,
       fontSize: _scaleFontSize(context, 14),
     );
   }
-    static TextStyle mediumDarkText2(BuildContext context) {
+
+  static TextStyle mediumDarkText2(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.secondaryLighterTextColor,
@@ -91,14 +89,13 @@ class AppTextStyles {
     );
   }
 
-   static TextStyle mediumDarkText3(BuildContext context) {
+  static TextStyle mediumDarkText3(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.secondaryLighterTextColor,
       fontSize: _scaleFontSize(context, 18),
     );
   }
-
 
   static TextStyle darkText3(BuildContext context) {
     return TextStyle(
@@ -117,7 +114,7 @@ class AppTextStyles {
     );
   }
 
-    static TextStyle darkText(BuildContext context) {
+  static TextStyle darkText(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.darkTextColor,
@@ -135,7 +132,7 @@ class AppTextStyles {
     );
   }
 
-    static TextStyle darkTexttext5(BuildContext context) {
+  static TextStyle darkTexttext5(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.darkTextColor,
@@ -153,7 +150,7 @@ class AppTextStyles {
     );
   }
 
-static TextStyle text7(BuildContext context) {
+  static TextStyle text7(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.textWhite,
@@ -162,8 +159,7 @@ static TextStyle text7(BuildContext context) {
     );
   }
 
-  
-    static TextStyle darkTexttext7(BuildContext context) {
+  static TextStyle darkTexttext7(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.darkTextColor,
@@ -181,22 +177,20 @@ static TextStyle text7(BuildContext context) {
     );
   }
 
-
   static TextStyle darkTexttext9(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.darkTextColor,
-      fontSize: _scaleFontSize(context,32),
+      fontSize: _scaleFontSize(context, 32),
       fontWeight: FontWeight.bold,
     );
   }
 
-  
   static TextStyle darkTexttext10(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColor.darkTextColor,
-      fontSize: _scaleFontSize(context,36),
+      fontSize: _scaleFontSize(context, 36),
       fontWeight: FontWeight.bold,
     );
   }
@@ -205,7 +199,7 @@ static TextStyle text7(BuildContext context) {
   static TextStyle caption(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
-      color: AppColor.textWhite.withOpacity(0.7),
+      color: AppColor.textWhite.withAlpha(180),
       fontSize: _scaleFontSize(context, 10),
     );
   }
@@ -219,8 +213,3 @@ static TextStyle text7(BuildContext context) {
     );
   }
 }
-
-
-
-
-

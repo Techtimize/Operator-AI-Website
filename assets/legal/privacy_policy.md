@@ -132,6 +132,6 @@ Dubai Silicon Oasis, Dubai, United Arab Emirates
 
 ---
 
-**Last Updated: October, 2025**
+**Last Updated: October 2025**
 
 By using Opperator AI Messages, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.
