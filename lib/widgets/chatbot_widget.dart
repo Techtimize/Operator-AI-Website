@@ -5,6 +5,7 @@ import '../models/chatbot_response.dart';
 import 'chatbot_network.dart';
 import 'chat_media_card.dart';
 import '../models/chatbot_button_data.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatbotWidget extends StatefulWidget {
   final double panelRightOffset;
@@ -32,8 +33,7 @@ class ChatMessage {
 }
 
 class ChatbotWidgetState extends State<ChatbotWidget> {
-  final String _userId =
-      'user-' + DateTime.now().millisecondsSinceEpoch.toString();
+  final String _userId = const Uuid().v4();
   bool _isOpen = false;
   final List<ChatMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();

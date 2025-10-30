@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import '../models/chatbot_response.dart';
+import '../src/generated/assets/compiled_asset_registry.dart';
 
 class ChatbotNetworkService {
   static Future<ChatbotResponse?> sendMessage({
@@ -16,10 +17,12 @@ class ChatbotNetworkService {
       debugPrint('User ID: $userId');
       debugPrint('Message: $message');
 
+      final assetRegistryData = _getAssetRegistryData();
+
       final requestBody = {
         'user_id': userId,
         'message': message,
-        'frontend_assets': {},
+        'frontend_assets': assetRegistryData,
       };
 
       final response = await http.post(
@@ -43,4 +46,28 @@ class ChatbotNetworkService {
     }
     return null;
   }
+}
+
+/// Get asset registry data for backend (mirrors public-website structure)
+Map<String, dynamic> _getAssetRegistryData() {
+  final assetData = compiledAssetRegistryToJson();
+
+  return {
+    'registry': assetData,
+    'metadata': {
+      'total_assets':
+          (compiledAssetRegistry['images'] as List).length +
+          (compiledAssetRegistry['videos'] as List).length +
+          (compiledAssetRegistry['other'] as List).length,
+      'image_assets': getAssetsByType('image').length,
+      'video_assets': getAssetsByType('video').length,
+      'generated_at': DateTime.now().toIso8601String(),
+      'source': 'flutter_chatbot',
+      'version': '1.0.0',
+    },
+    'assets_by_type': {
+      'images': getAssetsByType('image'),
+      'videos': getAssetsByType('video'),
+    },
+  };
 }
