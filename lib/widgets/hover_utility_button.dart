@@ -35,7 +35,7 @@ class _HoverUtilityButtonState extends State<HoverUtilityButton>
         child: AnimatedBuilder(
           animation: colorAnimation,
           builder: (context, child) {
-            final normalColor = widget.backgroundColor ?? Colors.white;
+            final normalColor = widget.backgroundColor ?? Color(0xFFEFF6FF);
             final startColor = Color.lerp(
               normalColor,
               const Color(0xFF2563EB),
@@ -63,13 +63,11 @@ class _HoverUtilityButtonState extends State<HoverUtilityButton>
                 border: Border.all(
                   color: Color.lerp(
                     widget.borderColor ??
-                        const Color(
-                          0xFF60A5FA,
-                        ), // Default border color (blue-400)
+                        const Color(0xFFBEDBFF), // Default border color (blue-400)
                     const Color(0xFF2563EB), // Hover border color (blue-600)
                     colorAnimation.value,
                   )!,
-                  width: 1.0 + (0.5 * colorAnimation.value),
+                  width: 2.0 + (0.5 * colorAnimation.value),
                 ),
                 boxShadow: colorAnimation.value > 0.0
                     ? [
@@ -86,7 +84,7 @@ class _HoverUtilityButtonState extends State<HoverUtilityButton>
               child: Icon(
                 widget.icon,
                 color: Color.lerp(
-                  widget.iconColor ?? const Color(0xFF424242),
+                  widget.iconColor ?? const Color(0xFF155DFC),
                   Colors.white,
                   colorAnimation.value,
                 ),

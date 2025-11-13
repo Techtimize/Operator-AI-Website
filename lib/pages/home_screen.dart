@@ -71,9 +71,9 @@ class HomeScreenContent extends StatelessWidget {
 
     final cards = [
       HomeFeatureCard(
-        heading: 'A.I. CRM',
+        heading: 'A.1. CRM',
         description:
-            'Powerful customer relationship management with quantum-level security',
+            'Powerful customer relationship management with quantum-level',
         backgroundColor: const Color(0xFFF0F9FF), // Light blue
         illustration: buildIllustration(Icons.hub_outlined, const [
           Icons.message,
@@ -95,8 +95,8 @@ class HomeScreenContent extends StatelessWidget {
       ),
       HomeFeatureCard(
         heading: 'A.I. SALES',
-        description: 'AI-powered sales tools to boost your revenue',
-        backgroundColor: const Color(0xFFF5F3FF), // Light purple
+        description: "The most Intelligent & Smart Sales",
+        backgroundColor: Color(0xFFE8FAF1), // Light purple
         illustration: buildIllustration(Icons.trending_up, const [
           Icons.person_add,
           Icons.phone,
@@ -170,30 +170,30 @@ class HomeScreenContent extends StatelessWidget {
           ),
         ],
       ),
-      HomeFeatureCard(
-        heading: 'PRICING',
-        description: 'Solutions that scale with your business',
-        backgroundColor: const Color(0xFFFFF5E6), // Light orange
-        illustration: buildIllustration(Icons.payments_outlined, const [
-          Icons.price_change_outlined,
-          Icons.lock_outline,
-        ], const Color(0xFFFBBF24)),
-        subFeatures: [
-          const SubFeatureCardData(
-            icon: Icons.business,
-            text: 'Enterprise Plans',
-          ),
-          const SubFeatureCardData(
-            icon: Icons.storage,
-            text: 'Scalable Solutions',
-          ),
-          const SubFeatureCardData(
-            icon: Icons.payment,
-            text: 'Flexible Billing',
-          ),
-          const SubFeatureCardData(icon: Icons.lock, text: 'Secure Payments'),
-        ],
-      ),
+      // HomeFeatureCard(
+      //   heading: 'PRICING',
+      //   description: 'Solutions that scale with your business',
+      //   backgroundColor: const Color(0xFFFFF5E6), // Light orange
+      //   illustration: buildIllustration(Icons.payments_outlined, const [
+      //     Icons.price_change_outlined,
+      //     Icons.lock_outline,
+      //   ], const Color(0xFFFBBF24)),
+      //   subFeatures: [
+      //     const SubFeatureCardData(
+      //       icon: Icons.business,
+      //       text: 'Enterprise Plans',
+      //     ),
+      //     const SubFeatureCardData(
+      //       icon: Icons.storage,
+      //       text: 'Scalable Solutions',
+      //     ),
+      //     const SubFeatureCardData(
+      //       icon: Icons.payment,
+      //       text: 'Flexible Billing',
+      //     ),
+      //     const SubFeatureCardData(icon: Icons.lock, text: 'Secure Payments'),
+      //   ],
+      // ),
     ];
 
     return Column(

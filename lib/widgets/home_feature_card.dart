@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_sub_feature_card.dart';
 
-class HomeFeatureCard extends StatelessWidget {
+class HomeFeatureCard extends StatefulWidget {
   final String heading;
   final String description;
   final VoidCallback? onViewMorePressed;
@@ -20,6 +20,13 @@ class HomeFeatureCard extends StatelessWidget {
   });
 
   @override
+  State<HomeFeatureCard> createState() => _HomeFeatureCardState();
+}
+
+class _HomeFeatureCardState extends State<HomeFeatureCard> {
+  bool isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
@@ -28,11 +35,11 @@ class HomeFeatureCard extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 1232),
       padding: EdgeInsets.all(isMobile ? 20 : 30),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Colors.grey.withOpacity(0.1),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -40,10 +47,8 @@ class HomeFeatureCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Top section with heading, description, button, and image
           _buildTopSection(isMobile),
           const SizedBox(height: 32),
-          // Sub-features grid
           _buildSubFeaturesGrid(isMobile),
         ],
       ),
@@ -52,7 +57,6 @@ class HomeFeatureCard extends StatelessWidget {
 
   Widget _buildTopSection(bool isMobile) {
     if (isMobile) {
-      // Mobile: Stack elements vertically
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -63,7 +67,6 @@ class HomeFeatureCard extends StatelessWidget {
       );
     }
 
-    // Desktop: Side by side layout
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,29 +84,64 @@ class HomeFeatureCard extends StatelessWidget {
         _buildHeading(),
         const SizedBox(height: 16),
         Text(
-          description,
+          widget.description,
           style: TextStyle(
-            fontSize: isMobile ? 14 : 16,
+            fontSize: isMobile ? 14 : 19,
             color: const Color(0xFF374151),
             height: 1.6,
+            fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: onViewMorePressed ?? () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2563EB),
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+        MouseRegion(
+          onEnter: (_) => setState(() => isHovered = true),
+          onExit: (_) => setState(() => isHovered = false),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            transform: Matrix4.identity()..scale(isHovered ? 1.05 : 1.0),
+            decoration: BoxDecoration(
+              boxShadow: isHovered
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF155DFC).withOpacity(0.1),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                  : [],
             ),
-          ),
-          child: const Text(
-            'View more',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
+            child: ElevatedButton(
+              onPressed: widget.onViewMorePressed ?? () {},
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(MaterialState.hovered)) {
+                    return const Color(0xFF0F4CD8);
+                  }
+                  return const Color(0xFF155DFC);
+                }),
+                padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                ),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                elevation: MaterialStateProperty.resolveWith<double>((states) {
+                  if (states.contains(MaterialState.hovered)) {
+                    return 14;
+                  }
+                  return 10;
+                }),
+              ),
+              child: const Text(
+                'View more',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ),
         ),
@@ -112,7 +150,7 @@ class HomeFeatureCard extends StatelessWidget {
   }
 
   Widget _buildHeading() {
-    final parts = heading.split(' ');
+    final parts = widget.heading.split(' ');
     final hasAiAndSales =
         parts.length >= 2 &&
         parts[0].toUpperCase() == 'A.I.' &&
@@ -127,7 +165,7 @@ class HomeFeatureCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFEC4899), // Pink
+                color: Color(0xFFEC4899),
               ),
             ),
             TextSpan(
@@ -135,7 +173,7 @@ class HomeFeatureCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E3A8A), // Deep blue
+                color: Color(0xFF1E3A8A),
               ),
             ),
           ],
@@ -143,7 +181,6 @@ class HomeFeatureCard extends StatelessWidget {
       );
     }
 
-    // Check for other patterns with "A.I."
     if (parts.length >= 2 && parts[0].toUpperCase() == 'A.I.') {
       return RichText(
         text: TextSpan(
@@ -153,7 +190,7 @@ class HomeFeatureCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFEC4899), // Pink
+                color: Color(0xFFEC4899),
               ),
             ),
             TextSpan(
@@ -161,7 +198,7 @@ class HomeFeatureCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E3A8A), // Deep blue
+                color: Color(0xFF1E3A8A),
               ),
             ),
           ],
@@ -170,7 +207,7 @@ class HomeFeatureCard extends StatelessWidget {
     }
 
     return Text(
-      heading,
+      widget.heading,
       style: const TextStyle(
         fontSize: 48,
         fontWeight: FontWeight.bold,
@@ -180,8 +217,7 @@ class HomeFeatureCard extends StatelessWidget {
   }
 
   Widget _buildImageArea(bool isMobile) {
-    final Widget content =
-        illustration ??
+    final Widget content = widget.illustration ??
         const Center(
           child: Icon(Icons.image, size: 64, color: Color(0xFF9CA3AF)),
         );
@@ -204,7 +240,7 @@ class HomeFeatureCard extends StatelessWidget {
 
     if (crossAxisCount == 1) {
       return Column(
-        children: subFeatures.asMap().entries.map((entry) {
+        children: widget.subFeatures.asMap().entries.map((entry) {
           final index = entry.key;
           final feature = entry.value;
           return Column(
@@ -218,7 +254,7 @@ class HomeFeatureCard extends StatelessWidget {
     }
 
     final List<Widget> widgets = [];
-    subFeatures.asMap().entries.forEach((entry) {
+    widget.subFeatures.asMap().entries.forEach((entry) {
       final index = entry.key;
       final feature = entry.value;
 
@@ -240,6 +276,5 @@ class HomeFeatureCard extends StatelessWidget {
 class SubFeatureCardData {
   final IconData icon;
   final String text;
-
   const SubFeatureCardData({required this.icon, required this.text});
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'nav_button.dart';
 import 'hover_utility_button.dart';
 import 'hover_language_selector.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Navbar extends StatelessWidget {
   final String? activeRoute;
@@ -163,6 +164,8 @@ class UtilityIcons extends StatelessWidget {
         _buildUtilityButton(Icons.person, () {}),
         const SizedBox(width: 8),
         _buildLanguageSelector(),
+        const SizedBox(width: 7),
+        _buildUtilityButton(  FontAwesomeIcons.cartShopping, (){})
       ],
     );
   }
