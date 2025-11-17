@@ -18,15 +18,18 @@ class HeroSection extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFF87CEEB), // Light sky blue
-            Color(0xFF4169E1), // Royal blue
-          ],
+        Color(0xFF1D4ED8), // 0%
+        Color(0xFF3B82F6), // 50%
+        Color(0xFF93C5FD), // 100%
+      ],
+      stops: [0.0, 0.5, 1.0],
+          
         ),
       ),
       child: Stack(
         children: [
           // Subtle background pattern
-          _buildBackgroundPattern(),
+          // _buildBackgroundPattern(),
 
           // Main content with proper padding
           Padding(
@@ -43,9 +46,9 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  Widget _buildBackgroundPattern() {
-    return Positioned.fill(child: CustomPaint(painter: DotsPatternPainter()));
-  }
+  // Widget _buildBackgroundPattern() {
+  //   return Positioned.fill(child: CustomPaint(painter: DotsPatternPainter()));
+  // }
 
   Widget _buildInteractiveAvatar() {
     return InteractiveAvatarWidget(

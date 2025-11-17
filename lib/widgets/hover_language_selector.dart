@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'hover_mixin.dart';
 
 class HoverLanguageSelector extends StatefulWidget {
-  final String selectedLanguage;
+  final String selectedLanguageCode;
   final Function(String)? onLanguageChanged;
   final Color? backgroundColor;
   final Color? textColor;
@@ -10,7 +12,7 @@ class HoverLanguageSelector extends StatefulWidget {
 
   const HoverLanguageSelector({
     super.key,
-    this.selectedLanguage = 'English',
+    this.selectedLanguageCode = 'GB',
     this.onLanguageChanged,
     this.backgroundColor,
     this.textColor,
@@ -25,13 +27,22 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
     with SingleTickerProviderStateMixin, HoverMixin {
   bool _isDropdownOpen = false;
   OverlayEntry? _overlayEntry;
-  final List<String> _languages = [
-    'English',
-    'Spanish',
-    'French',
-    'German',
-    'Italian',
-  ];
+
+  final Map<String, String> _languageMap = {
+    'GB': 'English',
+    'ES': 'Spanish',
+    'FR': 'French',
+    'DE': 'German',
+    'IT': 'Italian',
+  };
+
+  late String _selectedCode;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCode = widget.selectedLanguageCode;
+  }
 
   @override
   void dispose() {
@@ -48,93 +59,110 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
   }
 
   void _showOverlay() {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
-    final Size size = renderBox.size;
+  final RenderBox renderBox = context.findRenderObject() as RenderBox;
+  final Offset offset = renderBox.localToGlobal(Offset.zero);
+  final Size size = renderBox.size;
+  final screenWidth = MediaQuery.of(context).size.width;
 
-    _overlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
-        onTap: _hideOverlay,
-        child: Stack(
-          children: [
-            // Invisible overlay to catch taps
-            Positioned.fill(child: Container(color: Colors.transparent)),
-            // Dropdown positioned relative to the button
-            Positioned(
-              top: offset.dy + size.height + 5,
-              left: offset.dx,
-              child: Material(
-                elevation: 20,
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.transparent,
-                child: Container(
-                  width: size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFF60A5FA),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+  double dropdownWidth = size.width; // initial width
+  double leftPosition = offset.dx-60;
+
+  // agar dropdown screen ke right edge se bahar ja raha ho to adjust kar do
+  if (leftPosition + dropdownWidth > screenWidth - 10) {
+    leftPosition = screenWidth - dropdownWidth - 10;
+  }
+
+  _overlayEntry = OverlayEntry(
+    builder: (context) => GestureDetector(
+      onTap: _hideOverlay,
+      child: Stack(
+        children: [
+          Positioned.fill(child: Container(color: Colors.transparent)),
+          Positioned(
+            top: offset.dy + size.height + 5,
+            left: leftPosition,
+            child: Material(
+              elevation: 20,
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.transparent,
+              child: Container(
+                width: dropdownWidth,
+                constraints: const BoxConstraints(minWidth: 140, maxWidth: 220),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color(0xFF60A5FA),
+                    width: 1,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: _languages.map((language) {
-                      final isSelected = language == widget.selectedLanguage;
-                      return Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => _selectLanguage(language),
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color(0xFFF3F4F6)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              language,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? const Color(0xFF2563EB)
-                                    : const Color(0xFF424242),
-                                fontSize: 14,
-                                fontWeight: isSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.w500,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _languageMap.entries.map((entry) {
+                    final isSelected = entry.key == _selectedCode;
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => _selectLanguage(entry.key),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFF3F4F6)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/flags/${entry.key.toLowerCase()}.svg',
+                                width: 24,
+                                height: 16,
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                              Text(
+                                entry.value,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: isSelected
+                                      ? const Color(0xFF2563EB)
+                                      : const Color(0xFF424242),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }).toList(),
-                  ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ),
+  );
 
-    Overlay.of(context).insert(_overlayEntry!);
-    setState(() {
-      _isDropdownOpen = true;
-    });
-  }
+  Overlay.of(context).insert(_overlayEntry!);
+  setState(() {
+    _isDropdownOpen = true;
+  });
+}
+
 
   void _hideOverlay() {
     _overlayEntry?.remove();
@@ -144,15 +172,17 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
     });
   }
 
-  @override
-  void onHoverExit() {
-    // Always allow hover exit - the lift effect should disappear when mouse leaves the button
-    super.onHoverExit();
+  void _selectLanguage(String code) {
+    _hideOverlay();
+    setState(() {
+      _selectedCode = code;
+    });
+    widget.onLanguageChanged?.call(code);
   }
 
-  void _selectLanguage(String language) {
-    _hideOverlay();
-    widget.onLanguageChanged?.call(language);
+  @override
+  void onHoverExit() {
+    super.onHoverExit();
   }
 
   @override
@@ -163,7 +193,8 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
         child: AnimatedBuilder(
           animation: colorAnimation,
           builder: (context, child) {
-            final normalColor = widget.backgroundColor ?? Colors.white;
+            final normalColor =
+                widget.backgroundColor ?? const Color(0xFFEFF6FF);
             final startColor = Color.lerp(
               normalColor,
               const Color(0xFF2563EB),
@@ -176,7 +207,8 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
             )!;
 
             return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 gradient: colorAnimation.value > 0.0
                     ? LinearGradient(
@@ -189,21 +221,17 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: Color.lerp(
-                    widget.borderColor ??
-                        const Color(
-                          0xFF60A5FA,
-                        ), // Default border color (blue-400)
-                    const Color(0xFF2563EB), // Hover border color (blue-600)
+                    widget.borderColor ?? const Color(0xFFDBEAFE),
+                    const Color(0xFF2563EB),
                     colorAnimation.value,
                   )!,
-                  width: 1.0 + (0.5 * colorAnimation.value),
+                  width: 2.0 + (0.5 * colorAnimation.value),
                 ),
                 boxShadow: colorAnimation.value > 0.0
                     ? [
                         BoxShadow(
-                          color: const Color(
-                            0xFF2563EB,
-                          ).withValues(alpha: 0.3 * colorAnimation.value),
+                          color: const Color(0xFF2563EB)
+                              .withOpacity(0.3 * colorAnimation.value),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -213,27 +241,10 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.language,
-                    color: Color.lerp(
-                      const Color(0xFF424242),
-                      Colors.white,
-                      colorAnimation.value,
-                    ),
-                    size: 16,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    widget.selectedLanguage,
-                    style: TextStyle(
-                      color: Color.lerp(
-                        widget.textColor ?? const Color(0xFF424242),
-                        Colors.white,
-                        colorAnimation.value,
-                      ),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  SvgPicture.asset(
+                    'assets/flags/${_selectedCode.toLowerCase()}.svg',
+                    width: 24,
+                    height: 16,
                   ),
                   const SizedBox(width: 4),
                   Icon(
@@ -241,7 +252,7 @@ class _HoverLanguageSelectorState extends State<HoverLanguageSelector>
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Color.lerp(
-                      const Color(0xFF424242),
+                      const Color(0xFF155DFC),
                       Colors.white,
                       colorAnimation.value,
                     ),

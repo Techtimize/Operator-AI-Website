@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'hover_mixin.dart';
+import '../responsiveness/responsive.dart'; // optional if you want responsive sizes
 
 class HoverUtilityButton extends StatefulWidget {
-  final IconData icon;
+  final String assetPath; // Can be SVG or PNG
   final VoidCallback? onTap;
   final double? width;
   final double? height;
@@ -12,10 +14,10 @@ class HoverUtilityButton extends StatefulWidget {
 
   const HoverUtilityButton({
     super.key,
-    required this.icon,
+    required this.assetPath,
     this.onTap,
-    this.width = 32,
-    this.height = 32,
+    this.width = 38,
+    this.height = 38,
     this.backgroundColor,
     this.iconColor,
     this.borderColor,
@@ -35,7 +37,7 @@ class _HoverUtilityButtonState extends State<HoverUtilityButton>
         child: AnimatedBuilder(
           animation: colorAnimation,
           builder: (context, child) {
-            final normalColor = widget.backgroundColor ?? Color(0xFFEFF6FF);
+            final normalColor = widget.backgroundColor ?? const Color(0xFFEFF6FF);
             final startColor = Color.lerp(
               normalColor,
               const Color(0xFF2563EB),
@@ -62,9 +64,8 @@ class _HoverUtilityButtonState extends State<HoverUtilityButton>
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: Color.lerp(
-                    widget.borderColor ??
-                        const Color(0xFFBEDBFF), // Default border color (blue-400)
-                    const Color(0xFF2563EB), // Hover border color (blue-600)
+                    widget.borderColor ?? const Color(0xFFBEDBFF),
+                    const Color(0xFF2563EB),
                     colorAnimation.value,
                   )!,
                   width: 2.0 + (0.5 * colorAnimation.value),
@@ -72,24 +73,35 @@ class _HoverUtilityButtonState extends State<HoverUtilityButton>
                 boxShadow: colorAnimation.value > 0.0
                     ? [
                         BoxShadow(
-                          color: const Color(
-                            0xFF2563EB,
-                          ).withValues(alpha: 0.3 * colorAnimation.value),
+                          color: const Color(0xFF2563EB)
+                              .withOpacity(0.3 * colorAnimation.value),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
                       ]
                     : null,
               ),
-              child: Icon(
-                widget.icon,
-                color: Color.lerp(
-                  widget.iconColor ?? const Color(0xFF155DFC),
-                  Colors.white,
-                  colorAnimation.value,
-                ),
-                size: 20,
-              ),
+              child: widget.assetPath.toLowerCase().endsWith('.svg')
+                  ? SvgPicture.asset(
+                      widget.assetPath,
+                      color: Color.lerp(
+                        widget.iconColor ?? const Color(0xFF155DFC),
+                        Colors.white,
+                        colorAnimation.value,
+                      ),
+                      fit: BoxFit.scaleDown,
+                      width: context.rw(10),
+                      height: context.rh(10),
+                    )
+                  : ImageIcon(
+                      AssetImage(widget.assetPath),
+                      color: Color.lerp(
+                        widget.iconColor ?? const Color(0xFF155DFC),
+                        Colors.white,
+                        colorAnimation.value,
+                      ),
+                      size: context.rw(10),
+                    ),
             );
           },
         ),

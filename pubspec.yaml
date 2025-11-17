@@ -19,6 +19,7 @@ dependencies:
   flutter_markdown: ^0.7.4+1
   uuid: ^4.0.0
   font_awesome_flutter: ^10.12.0
+  google_fonts: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +33,12 @@ flutter:
     - assets/images/
     - assets/animations/
     - assets/legal/
+    - assets/Icons/
+    - assets/Icons/searchIcon.svg
+    - assets/flags/
+    - assets/flags/IT.svg
+    - assets/flags/DE.svg
+    - assets/flags/FR.svg
+    - assets/flags/ES.svg
+    - assets/flags/GB.svg
+    

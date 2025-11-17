@@ -72,7 +72,7 @@ class _NavButtonState extends State<NavButton>
                     const Color(0xFF2563EB), // Hover border color (blue-600)
                     colorAnimation.value,
                   )!,
-                  width: 1.0 + (0.5 * colorAnimation.value),
+                  width: 2.0 + (0.5 * colorAnimation.value),
                 ),
                 boxShadow: colorAnimation.value > 0.0
                     ? [

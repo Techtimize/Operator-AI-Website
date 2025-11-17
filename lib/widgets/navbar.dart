@@ -3,6 +3,8 @@ import 'nav_button.dart';
 import 'hover_utility_button.dart';
 import 'hover_language_selector.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 class Navbar extends StatelessWidget {
   final String? activeRoute;
@@ -117,8 +119,8 @@ class NavigationLinks extends StatelessWidget {
       NavigationItem(text: 'AI SALES', route: '/ai-sales'),
       NavigationItem(text: 'AI MKT', route: '/ai-mkt'),
       NavigationItem(text: 'AI CSR', route: '/ai-csr'),
-      NavigationItem(text: 'Industries', route: '/industries'),
-      NavigationItem(text: 'Pricing', route: '/pricing'),
+      NavigationItem(text: 'INDUSTRIES', route: '/industries'),
+      NavigationItem(text: 'PRICING', route: '/pricing'),
     ],
     this.activeItem,
     this.onItemTap,
@@ -159,20 +161,24 @@ class UtilityIcons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _buildUtilityButton(Icons.search, () {}),
+        _buildUtilityButton('assets/Icons/searchIcon.svg', () {}),
         const SizedBox(width: 8),
-        _buildUtilityButton(Icons.person, () {}),
+        _buildUtilityButton('assets/Icons/personIcon.svg', () {}),
         const SizedBox(width: 8),
         _buildLanguageSelector(),
-        const SizedBox(width: 7),
-        _buildUtilityButton(  FontAwesomeIcons.cartShopping, (){})
+        const SizedBox(width: 8),
+        _buildUtilityButton(  'assets/Icons/cartIcon.svg', (){})
       ],
     );
   }
 
-  Widget _buildUtilityButton(IconData icon, VoidCallback onTap) {
-    return HoverUtilityButton(icon: icon, onTap: onTap);
-  }
+  Widget _buildUtilityButton(String assetPath, VoidCallback onTap) {
+  return HoverUtilityButton(
+    assetPath: assetPath,
+    onTap: onTap,
+  );
+}
+
 
   Widget _buildLanguageSelector() {
     return HoverLanguageSelector(
