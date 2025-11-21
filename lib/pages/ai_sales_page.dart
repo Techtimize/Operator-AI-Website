@@ -1258,52 +1258,72 @@ class _CtaButtonState extends State<_CtaButton> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedScale(
-        scale: _isHovered ? 1.05 : 1.0,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        child: GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: widget.isMobile ? double.infinity : null,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF2F6FFF), Color(0xFF8A2BE2)],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: _isHovered ? 0.4 : 0.3),
-                  blurRadius: _isHovered ? 12 : 8,
-                  offset: Offset(0, _isHovered ? 6 : 4),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.isMobile ? 24 : 48,
-              vertical: 16,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'START USING A.I. TODAY',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(Icons.arrow_forward, color: Colors.white, size: 20),
-              ],
-            ),
+  onEnter: (_) => setState(() => _isHovered = true),
+  onExit: (_) => setState(() => _isHovered = false),
+  child: AnimatedScale(
+    scale: _isHovered ? 1.05 : 1.0,
+    duration: const Duration(milliseconds: 200),
+    curve: Curves.easeInOut,
+    child: GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: widget.isMobile ? double.infinity : null,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF2F6FFF), Color(0xFF8A2BE2)],
           ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: _isHovered ? 0.4 : 0.3),
+              blurRadius: _isHovered ? 12 : 8,
+              offset: Offset(0, _isHovered ? 6 : 4),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: widget.isMobile ? 24 : 48,
+          vertical: 16,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'START USING A.I. TODAY',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // 🚀 Animated arrow slide + IconButton
+            AnimatedSlide(
+              offset: _isHovered ? const Offset(0.15, 0) : Offset.zero,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                onPressed: () {
+                  print("Arrow pressed!");
+                  // yahan apni action call karo
+                },
+              ),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  ),
+);
+
   }
 }

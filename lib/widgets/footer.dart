@@ -65,11 +65,15 @@ class Footer extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        _buildLink('Blog', context),
+        _buildSeparator(),
+        _buildLink('News', context),
+        _buildSeparator(),
+        _buildLink('Resources', context),
+        _buildSeparator(),
         _buildLink('Privacy Policy', context),
         _buildSeparator(),
         _buildLink('Terms of Service', context),
-        _buildSeparator(),
-        _buildLink('FAQ', context),
       ],
     );
   }

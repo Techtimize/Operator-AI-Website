@@ -18,7 +18,7 @@ final GoRouter router = GoRouter(
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const HomeScreenContent(),
+          builder: (context, state) => HomeScreenContent(),
         ),
         GoRoute(
           path: '/ai-sales',

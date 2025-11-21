@@ -4,6 +4,10 @@ import 'hover_utility_button.dart';
 import 'hover_language_selector.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../cart/cart_model.dart';
+import '../widgets/cart_dialog.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart'; // if using lucide icons
 
 
 class Navbar extends StatelessWidget {
@@ -167,7 +171,46 @@ class UtilityIcons extends StatelessWidget {
         const SizedBox(width: 8),
         _buildLanguageSelector(),
         const SizedBox(width: 8),
-        _buildUtilityButton(  'assets/Icons/cartIcon.svg', (){})
+        Consumer<CartModel>(
+  builder: (context, cart, _) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        HoverUtilityButton(
+          assetPath: 'assets/Icons/cartIcon.svg',
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (_) => CartDialog(cartModel: cart),
+            );
+          },
+        ),
+        if (cart.selectedCount > 0)
+          Positioned(
+            right: -2,
+            top: -3,
+            child: Container(
+              width: 18,
+              height: 18,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(9),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                cart.selectedCount.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  },
+),
       ],
     );
   }

@@ -53,16 +53,18 @@ class ResponsiveUtils {
       return ScreenSize.xl;
     }
   }
-
+  static bool isTablet(BuildContext context) {
+  return MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1024;
+}
   static bool isMobile(BuildContext context) {
     return MediaQuery.of(context).size.width < ResponsiveBreakpoints.md;
   }
 
-  static bool isTablet(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return width >= ResponsiveBreakpoints.md &&
-        width < ResponsiveBreakpoints.lg;
-  }
+  // static bool isTablet(BuildContext context) {
+  //   final width = MediaQuery.of(context).size.width;
+  //   return width >= ResponsiveBreakpoints.md &&
+  //       width < ResponsiveBreakpoints.lg;
+  // }
 
   static bool isDesktop(BuildContext context) {
     return MediaQuery.of(context).size.width >= ResponsiveBreakpoints.lg;

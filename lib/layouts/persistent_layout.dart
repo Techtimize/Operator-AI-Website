@@ -136,7 +136,7 @@ class _PersistentLayoutState extends State<PersistentLayout> {
   Widget _buildCurrentPage() {
     switch (_currentRoute) {
       case '/':
-        return const HomeScreenContent();
+        return HomeScreenContent();
       case '/ai-sales':
         return const AiSalesPageContent();
       case '/ai-mkt':
@@ -150,7 +150,7 @@ class _PersistentLayoutState extends State<PersistentLayout> {
       case '/faq':
         return const FaqPageContent();
       default:
-        return const HomeScreenContent();
+        return  HomeScreenContent();
     }
   }
 

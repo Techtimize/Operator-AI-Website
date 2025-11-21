@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:new_public_website/widgets/ctaButton.dart';
 import '../models/faq_item.dart';
 import 'faq_accordion_item.dart';
+
 
 class FaqSection extends StatefulWidget {
   final List<FaqItem>? faqItems;
@@ -37,7 +40,7 @@ class _FaqSectionState extends State<FaqSection> {
             children: [
               _buildSectionHeader(),
               const SizedBox(height: 48),
-              _buildFaqGrid(isMobile, isTablet),
+              _buildFaqGrid(isMobile, isTablet),              
             ],
           ),
         ),
@@ -50,21 +53,21 @@ class _FaqSectionState extends State<FaqSection> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Light blue line above title
-        Container(
-          width: 40,
-          height: 2,
-          decoration: const BoxDecoration(
-            color: Color(0xFF3B82F6),
-            borderRadius: BorderRadius.all(Radius.circular(1)),
-          ),
-        ),
-        const SizedBox(height: 16),
+        // Container(
+        //   width: 40,
+        //   height: 2,
+        //   decoration: const BoxDecoration(
+        //     color: Color(0xFF3B82F6),
+        //     borderRadius: BorderRadius.all(Radius.circular(1)),
+        //   ),
+        // ),
+        // const SizedBox(height: 16),
         Text(
           widget.title ?? 'FAQ',
           style: const TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1E40AF),
+            fontSize: 46,
+            fontWeight: FontWeight.normal,
+            color: Color(0xFF155DFC),
           ),
           textAlign: TextAlign.center,
         ),
@@ -164,9 +167,9 @@ class _FaqSectionState extends State<FaqSection> {
             'We provide comprehensive AI-powered solutions including AI Receptionist for 24/7 customer support, A.I. CRM for secure and efficient customer relationship management, AI Sales automation, 3D Avatar-Web integration, AI Content Creation, Social Media Automation, Lead Generation, and Customer Service Representatives. Our solutions are designed to streamline business operations and enhance customer engagement',
       ),
       const FaqItem(
-        question: 'Can OPPERATOR AI handle multiple languages?',
+        question: 'Does OPERATOR AI Integrate with my existing system?',
         answer:
-            'Yes! Our AI solutions support multiple languages including Arabic, English, French, Spanish, and many more. The AI can seamlessly switch between languages during conversations and can be customized to support your specific market\'s language requirements.',
+            'Yes, absolutely! Our AI solutions are designed to integrate seamlessly with your existing CRM, calendar systems, email platforms, WhatsApp, Telegram, LinkedIn, and other business tools. We ensure minimal disruption to your current workflows while maximizing the benefits of AI automation.',
       ),
       const FaqItem(
         question: 'How quickly can I get started with OPPERATOR AI?',
@@ -174,39 +177,9 @@ class _FaqSectionState extends State<FaqSection> {
             'Getting started is simple! Contact our team through the website, schedule a consultation call, and we\'ll assess your specific needs. We\'ll then customize our AI solutions to fit your business requirements, provide implementation support, and offer training to ensure smooth adoption of our technology. Most implementations take 2-4 weeks.',
       ),
       const FaqItem(
-        question: 'What kind of support do you provide after implementation?',
+        question: 'What is the Pricing structure for OPPERATOR AI services?',
         answer:
             'We provide comprehensive 24/7 support including technical assistance, regular system updates, performance monitoring, and optimization recommendations. Our dedicated support team is always available to ensure your AI solutions continue to perform at peak efficiency.',
-      ),
-      const FaqItem(
-        question: 'Does OPPERATOR AI integrate with my existing systems?',
-        answer:
-            'Yes, absolutely! Our AI solutions are designed to integrate seamlessly with your existing CRM, calendar systems, email platforms, WhatsApp, Telegram, LinkedIn, and other business tools. We ensure minimal disruption to your current workflows while maximizing the benefits of AI automation.',
-      ),
-      const FaqItem(
-        question: 'How does AI improve my sales performance?',
-        answer:
-            'Our AI Sales solution automates lead qualification, follow-ups, and customer engagement, allowing your team to focus on closing deals. It provides predictive analytics, intelligent lead scoring, and automated workflows that can increase sales productivity by up to 40% and significantly reduce response times.',
-      ),
-      const FaqItem(
-        question: 'What is the pricing structure for OPPERATOR AI services?',
-        answer:
-            'Each AI product costs 800 AED for customization and deployment, plus a subscription of 4 AED per day. This includes full setup, training, and ongoing support. We offer flexible pricing options and can customize packages based on your specific business needs and scale.',
-      ),
-      const FaqItem(
-        question: 'Can I customize the AI to match my brand voice?',
-        answer:
-            'Absolutely! We fully customize each AI solution to match your brand\'s personality, tone, and communication style. Whether you need formal corporate communication or casual friendly interactions, we train the AI to represent your brand perfectly across all customer touchpoints.',
-      ),
-      const FaqItem(
-        question: 'How secure is my business data with OPPERATOR AI?',
-        answer:
-            'We take security extremely seriously. All data is encrypted end-to-end, stored in secure cloud infrastructure, and complies with international data protection standards. We implement multi-layer security protocols and regular security audits to ensure your business information remains completely protected.',
-      ),
-      const FaqItem(
-        question: 'What ROI can I expect from implementing OPPERATOR AI?',
-        answer:
-            'Most clients see significant ROI within 3-6 months. Benefits include 70% reduction in operational costs, 24/7 customer service coverage, 40% faster sales cycles, and improved customer satisfaction scores. We provide detailed analytics to track your ROI and continuously optimize performance.',
       ),
     ];
   }

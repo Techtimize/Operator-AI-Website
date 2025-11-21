@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/team_member.dart';
 import 'team_section.dart';
+import '../utils/app_reponsiveness/responsive_utils.dart';
 
 class CompanySection extends StatelessWidget {
   const CompanySection({super.key});
@@ -17,7 +18,7 @@ class CompanySection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildSectionHeader(),
+              _buildSectionHeader(context),
               const SizedBox(height: 48),
               _buildTeamSections(),
             ],
@@ -27,28 +28,52 @@ class CompanySection extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text(
-          'The Company',
+  Widget _buildSectionHeader(BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      ShaderMask(
+        shaderCallback: (Rect bounds) {
+          return LinearGradient(
+            colors: [
+              Color(0xff155DFC),
+              Color(0xff1447E6),
+              Color(0xff193CB8),
+            ],
+            stops: [0.0, 0.5, 1.0],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ).createShader(bounds);
+        },
+        child: Text(
+          'Leadership & Team',
           style: TextStyle(
-            fontSize: 36,
+            fontSize: ResponsiveUtils.getResponsiveFontSize(context, 36),
             fontWeight: FontWeight.bold,
-            color: Color(0xFF2563EB),
+            color: Colors.white,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 12),
-        const Text(
-          'Meet the visionaries behind OPPERATOR AI',
-          style: TextStyle(fontSize: 18, color: Color(0xFF374151)),
-          textAlign: TextAlign.center,
+      ),
+      
+      // Responsive spacing
+      SizedBox(height: ResponsiveUtils.isMobile(context) ? 8 : 12),
+      
+      // Responsive subtitle
+      Text(
+        ResponsiveUtils.isMobile(context) 
+            ? 'Experienced leaders and dedicated professionals driving innovation at Opperator AI'
+            : 'Experienced leaders and dedicated professionals driving innovation at\n Opperator AI',
+        style: TextStyle(
+          fontSize: ResponsiveUtils.getResponsiveFontSize(context, 18),
+          color: Color(0xFF4A5565),
+          height: ResponsiveUtils.isMobile(context) ? 1.4 : 1.5,
         ),
-      ],
-    );
-  }
+        textAlign: TextAlign.center,
+      ),
+    ],
+  );
+}
 
   Widget _buildTeamSections() {
     return Column(
